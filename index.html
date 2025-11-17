@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LSPDFR ModVault</title>
+  <meta name="description" content="LSPDFR ModVault — curated modpacks for LSPDFR" />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <style>
+    /* Reset & base */
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#98a2b3; --accent1:#6d28d9; --accent2:#ef4444; --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.02);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;}
+    body{
+      margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1200px 500px at 10% 10%, rgba(109,40,217,0.12), transparent),
+                  radial-gradient(900px 400px at 90% 90%, rgba(239,68,68,0.08), transparent),
+                  var(--bg); color:#e6eef8; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Header */
+    header{position:sticky; top:0; z-index:40; backdrop-filter: blur(8px); padding:18px 28px; display:flex; align-items:center; gap:18px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-bottom:1px solid rgba(255,255,255,0.03)}
+    .brand{display:flex; align-items:center; gap:12px;}
+    .logo{width:52px; height:52px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(135deg,var(--accent1), #f97316); box-shadow:0 8px 30px rgba(13,16,23,0.6);}
+    .logo svg{filter:drop-shadow(0 6px 20px rgba(109,40,217,0.2));}
+    h1{font-size:18px;margin:0; letter-spacing:0.4px}
+    .tag{font-size:12px;color:var(--muted)}
+
+    nav{margin-left:auto; display:flex; gap:12px; align-items:center}
+    .nav-btn{background:transparent;border:1px solid rgba(255,255,255,0.04); padding:8px 12px;border-radius:10px;color:var(--muted); cursor:pointer}
+    .nav-btn.active{background:linear-gradient(90deg, rgba(109,40,217,0.12), rgba(239,68,68,0.06)); color:#fff; border-color:rgba(255,255,255,0.06)}
+
+    /* Hero */
+    .hero{max-width:1100px;margin:36px auto 18px;padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); border-radius:16px; display:grid; grid-template-columns:1fr 360px; gap:20px; align-items:center}
+    .hero-left h2{margin:0;font-size:28px;line-height:1.02}
+    .lead{color:var(--muted); margin-top:10px; font-size:15px}
+    .cta-row{margin-top:18px; display:flex; gap:12px}
+    .btn{padding:10px 14px;border-radius:10px;border:none; cursor:pointer; font-weight:600}
+    .btn-primary{background:linear-gradient(90deg,var(--accent1), #f97316); color:white; box-shadow:0 10px 30px rgba(109,40,217,0.12)}
+    .btn-ghost{background:transparent;color:var(--muted); border:1px solid rgba(255,255,255,0.04)}
+
+    .hero-right{position:relative; padding:18px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03)}
+    .stats{display:flex; gap:12px; align-items:center; justify-content:space-between}
+    .stat{flex:1; text-align:center}
+    .stat .num{font-size:20px; font-weight:700}
+    .small{font-size:12px;color:var(--muted)}
+
+    /* Modpacks grid */
+    .container{max-width:1100px;margin:18px auto;padding:16px}
+    .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+    .card{background:linear-gradient(180deg,var(--card), rgba(255,255,255,0.01)); padding:18px; border-radius:12px; border:1px solid var(--glass); position:relative; overflow:hidden}
+    .card h3{margin:0 0 8px 0}
+    .card p{margin:0;color:var(--muted); font-size:14px}
+    .card-footer{display:flex; justify-content:space-between; align-items:center; margin-top:14px}
+    .download-btn{background:linear-gradient(90deg, #10b981, #06b6d4); color:#04111c; padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-weight:700}
+
+    /* animated shimmer */
+    .shine{position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg, rgba(255,255,255,0.00) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.00) 100%); transform:skewX(-18deg) translateX(-60%); animation:glide 6s linear infinite}
+    @keyframes glide{to{transform:skewX(-18deg) translateX(160%)}}
+
+    /* Toast */
+    .toast{position:fixed; right:20px; bottom:20px; background: linear-gradient(90deg, rgba(16,185,129,0.12), rgba(6,182,212,0.07)); border:1px solid rgba(255,255,255,0.04); padding:12px 16px; border-radius:10px; display:flex; gap:12px; align-items:center; backdrop-filter:blur(6px)}
+    .progress{height:8px; background:var(--glass-2); border-radius:999px; overflow:hidden}
+    .progress > i{display:block;height:100%; width:0%; background:linear-gradient(90deg,#34d399,#06b6d4);}
+
+    /* Footer */
+    footer{max-width:1100px;margin:28px auto;padding:18px;color:var(--muted); font-size:13px}
+
+    /* Responsive */
+    @media (max-width:880px){
+      .hero{grid-template-columns:1fr;}
+      .grid{grid-template-columns:1fr}
+      nav{display:none}
+    }
+
+    /* small animated floating icons */
+    .floaty{position:absolute; width:120px; height:120px; border-radius:18px; filter:blur(28px); opacity:0.12; transform:translate3d(0,0,0)}
+    .f1{right: -40px; top:-30px; background:linear-gradient(135deg, rgba(109,40,217,1), rgba(99,102,241,1)); animation:floatA 8s ease-in-out infinite}
+    .f2{left:-60px; bottom:-40px; background:linear-gradient(135deg, rgba(239,68,68,1), rgba(245,158,11,1)); animation:floatB 7s ease-in-out infinite}
+    @keyframes floatA{0%{transform:translateY(0)}50%{transform:translateY(20px)}100%{transform:translateY(0)}}
+    @keyframes floatB{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(8deg)}100%{transform:translateY(0) rotate(0deg)}}
+
+  </style>
+</head>
+<body>
+  <div class="floaty f1"></div>
+  <div class="floaty f2"></div>
+
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L21 7v10l-9 4-9-4V7l9-4z" fill="white" opacity="0.95"/></svg>
+      </div>
+      <div>
+        <h1>LSPDFR ModVault</h1>
+        <div class="tag">Curated modpacks for police roleplay</div>
+      </div>
+    </div>
+
+    <nav>
+      <button class="nav-btn active" data-page="modpacks">Modpacks</button>
+      <button class="nav-btn" data-page="about">About</button>
+      <button class="nav-btn" data-page="contact">Contact</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-left">
+        <h2>Modpacks built for roleplay — fast to install, curated for quality.</h2>
+        <div class="lead">Choose a curated pack, click download and enjoy stable, tested setups for LSPDFR. All packs include installation README and optional extras.</div>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="open-modpacks">Browse Modpacks</button>
+          <button class="btn btn-ghost" id="open-about">What is ModVault?</button>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:12px;color:var(--muted)">Latest release</div>
+            <div style="font-weight:800;font-size:16px">ModVault v1.2 — Nov 2025</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:12px;color:var(--muted)">Downloads</div>
+            <div class="num" style="font-weight:800">12,314</div>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+        <div class="stats">
+          <div class="stat"><div class="num">4</div><div class="small">Modpacks</div></div>
+          <div class="stat"><div class="num">120+</div><div class="small">Compatible Mods</div></div>
+          <div class="stat"><div class="num">99%</div><div class="small">Stability</div></div>
+        </div>
+
+      </div>
+      <div class="shine" aria-hidden></div>
+    </section>
+
+    <section class="container" id="modpacks-section">
+      <h2 style="margin:0 0 12px 0">Modpacks</h2>
+      <div class="grid" id="modpacks-grid">
+
+        <!-- Card template inserted by JS -->
+
+      </div>
+    </section>
+
+    <section class="container" id="about-section" style="display:none">
+      <h2>About ModVault</h2>
+      <p class="lead">LSPDFR ModVault was created by passionate roleplayers and dedicated LSPDFR players to give users an easier, faster way to get a full LSPDFR experience — without spending days downloading, testing, and searching for mods that actually work together.</p>
+      <p class="lead">Every modpack is curated, tested for compatibility, and optimized for stability so players can jump straight into immersive police roleplay with minimal setup time.</p>
+    </section>
+
+    <section class="container" id="contact-section" style="display:none">
+      <h2>Contact</h2>
+      <p class="lead">Questions? Add an issue to the repo or email <span style="color:var(--muted)">modvault@example.com</span> (replace with your real contact).</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+      <div>&copy; <strong>LSPDFR ModVault</strong> — curated packs • Built with HTML, CSS & JavaScript</div>
+      <div class="small">Deploy: GitHub Pages • Put modpacks in <code>/downloads/*.zip</code></div>
+    </div>
+  </footer>
+
+  <!-- Toast / downloader UI -->
+  <div id="toast" style="display:none" class="toast" role="status" aria-live="polite">
+    <div style="min-width:220px">
+      <div id="toast-text" style="font-weight:700">Preparing download…</div>
+      <div style="height:8px"></div>
+      <div class="progress"><i id="progress-bar"></i></div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);">Click to cancel</div>
+  </div>
+
+  <script>
+    // Modpacks data (edit file paths to match your repository /downloads)
+    const MODPACKS = [
+      {id:'urban-pack', name:'Urban Response Pack', desc:'High-density city patrol assets, traffic scripts, ERS outfits and soundpacks.', file:'/downloads/test.txt', size:'500 MB'},
+      {id:'traffic-pack', name:'Traffic Control Suite', desc:'Advanced radar, tow scripts, and accident scenes for immersive traffic stops.', file:'/downloads/traffic-pack.zip', size:'85 MB'},
+      {id:'academy-pack', name:'Academy Training Mods', desc:'Training scenarios, AI behaviours and scenario generators for roleplay drills.', file:'/downloads/academy-pack.zip', size:'45 MB'},
+      {id:'utility-pack', name:'Utility & Quality-of-life', desc:'Tools, optimizers and handy scripts to maintain a smooth LSPDFR session.', file:'/downloads/utility-pack.zip', size:'30 MB'}
+    ];
+
+    const grid = document.getElementById('modpacks-grid');
+
+    function createCard(m){
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.innerHTML = `
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); display:grid; place-items:center; font-weight:700">${m.name.split(' ').slice(0,1)[0].slice(0,2).toUpperCase()}</div>
+          <div style="flex:1">
+            <h3>${m.name}</h3>
+            <p>${m.desc}</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div style="color:var(--muted); font-size:13px">${m.size}</div>
+          <div style="display:flex; gap:10px; align-items:center">
+            <button class="download-btn" data-file="${m.file}" data-name="${m.name}">Download</button>
+          </div>
+        </div>
+      `;
+      // shiny overlay
+      const shine = document.createElement('div'); shine.className='shine'; el.appendChild(shine);
+      return el;
+    }
+
+    MODPACKS.forEach(m => grid.appendChild(createCard(m)));
+
+    // Navigation buttons
+    document.querySelectorAll('[data-page]').forEach(b => {
+      b.addEventListener('click', ()=>{
+        document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
+        b.classList.add('active');
+        const page = b.getAttribute('data-page');
+        showPage(page);
+      })
+    })
+
+    document.getElementById('open-modpacks').addEventListener('click', ()=> showPage('modpacks'))
+    document.getElementById('open-about').addEventListener('click', ()=> showPage('about'))
+
+    function showPage(name){
+      document.getElementById('modpacks-section').style.display = name==='modpacks' ? '' : 'none';
+      document.getElementById('about-section').style.display = name==='about' ? '' : 'none';
+      document.getElementById('contact-section').style.display = name==='contact' ? '' : 'none';
+      // update nav highlight
+      document.querySelectorAll('.nav-btn').forEach(n=> n.classList.toggle('active', n.getAttribute('data-page')===name));
+    }
+
+    // Download flow with UI animation
+    const toast = document.getElementById('toast');
+    const pb = document.getElementById('progress-bar');
+    const toastText = document.getElementById('toast-text');
+    let progressTimer = null;
+
+    function startFakeProgress(onComplete){
+      let pct = 0;
+      pb.style.width = '0%';
+      let step = ()=>{
+        pct += Math.random()*12 + 6; // randomish
+        if(pct>=98) pct = 98;
+        pb.style.width = pct + '%';
+        if(pct<98){
+          progressTimer = setTimeout(step, 300 + Math.random()*600);
+        } else {
+          // wait for server to start real download
+          progressTimer = setTimeout(()=>{
+            pb.style.width = '100%';
+            setTimeout(()=>{
+              onComplete && onComplete();
+              hideToast();
+            }, 600);
+          }, 800);
+        }
+      }
+      step();
+    }
+
+    function showToast(name){
+      toast.style.display = 'flex';
+      toastText.textContent = 'Preparing "' + name + '" — starting download';
+      pb.style.width = '0%';
+    }
+    function hideToast(){
+      toast.style.display = 'none';
+      clearTimeout(progressTimer);
+      pb.style.width = '0%';
+    }
+
+    // clicking toast cancels (UI only)
+    toast.addEventListener('click', hideToast);
+
+    // Attach download handlers
+    document.addEventListener('click', function(e){
+      const btn = e.target.closest('.download-btn');
+      if(!btn) return;
+      const file = btn.getAttribute('data-file');
+      const name = btn.getAttribute('data-name');
+      // Show UI
+      showToast(name);
+      startFakeProgress(()=>{
+        // trigger real download by creating an anchor
+        const a = document.createElement('a');
+        a.href = file;
+        a.download = file.split('/').pop();
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+    });
+
+    // keyboard shortcut: D to open modpacks
+    document.addEventListener('keydown', (e)=>{
+      if(e.key.toLowerCase()==='d') showPage('modpacks');
+    })
+
+    // small entry animations (fade in cards)
+    window.addEventListener('load', ()=>{
+      document.querySelectorAll('.card').forEach((c,i)=>{
+        c.style.opacity=0; c.style.transform='translateY(10px)';
+        setTimeout(()=>{ c.style.transition='all 520ms cubic-bezier(.2,.9,.3,1)'; c.style.opacity=1; c.style.transform='translateY(0)'; }, 120*i);
+      })
+    })
+
+  </script>
+</body>
+</html>
